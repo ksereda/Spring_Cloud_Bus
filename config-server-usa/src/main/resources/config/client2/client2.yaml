@@ -1,0 +1,5 @@
+server:
+  port: 8764
+
+test:
+  dataField: TT99-RW_client2

@@ -1,0 +1,49 @@
+server:
+  port: 8762
+
+management:
+  info:
+    build:
+      enabled: true
+    git:
+      enabled: true
+      mode: full
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  profiles:
+    active: native
+  cloud:
+    client.hostname: ${spring.cloud.client.ip-address:localhost}
+    config:
+      override-system-properties: false
+      server:
+        native:
+          search-locations:
+            classpath:/config/,
+            classpath:/config/client1,
+            classpath:/config/client2
+    bus:
+      enabled: false
+  application:
+    name: config-server
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+    ip-address: ${POD_IP:${spring.cloud.client.ip-address:localhost}}
+    hostname: ${POD_IP:${spring.cloud.client.ip-address:localhost}}
+    status-page-url: http://${eureka.instance.hostname}:${server.port}/actuator/info
+    health-check-url: http://${eureka.instance.hostname}:${server.port}/actuator/health
+    home-page-url: http://${eureka.instance.hostname}:${server.port}/actuator/env
+    appname: ${spring.application.name}
+    lease-renewal-interval-in-seconds: 25
+    lease-expiration-duration-in-seconds: 10

@@ -1,0 +1,39 @@
+server:
+  port: 8762
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  profiles:
+    active: git
+  application:
+    name: config-server
+  cloud:
+    config:
+      override-system-properties: false
+      server:
+        git:
+          uri:
+          clone-on-start: true
+          search-paths:
+            config-server/src/main/resources/config/,
+            config-server/src/main/resources/config/client1,
+            config-server/src/main/resources/config/client2
+          username: ksereda
+    bus:
+      enabled: true
+    kafka:
+      bootstrap-servers: ${KAFKA_ADDR:http://localhost:9092}
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    hostname: ${spring.application.name}
+    preferIpAddress: true
